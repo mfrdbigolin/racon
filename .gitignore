@@ -1,0 +1,14 @@
+.*
+*.[osa]
+*.bak
+
+*.pdf
+*.html
+
+!.gitattributes
+!.gitignore
+
+TODO/
+bin/
+doc/Drafts/
+lib/
