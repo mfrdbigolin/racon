@@ -1,0 +1,207 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdfetex 2020.1.18)  11 FEB 2020 21:57
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**\nonstopmode \input ./racon.texi
+(./racon.texi (/usr/share/texmf-dist/tex/texinfo/texinfo.tex
+Loading texinfo [version 2019-09-24.13]:
+\outerhsize=\dimen16
+\outervsize=\dimen17
+\topandbottommargin=\dimen18
+\bindingoffset=\dimen19
+\normaloffset=\dimen20
+\txipagewidth=\dimen21
+\txipageheight=\dimen22
+\defaultoutput=\toks13
+\headlinebox=\box16
+\footlinebox=\box17
+\savedtopmark=\toks14
+\margin=\insert252
+\EMsimple=\toks15
+\groupbox=\box18
+\groupinvalidhelp=\toks16
+\mil=\dimen23
+\exdentamount=\skip18
+\inmarginspacing=\skip19
+\centerpenalty=\count27
+ pdf,
+\tempnum=\count28
+\lnkcount=\count29
+\filename=\toks17
+\filenamelength=\count30
+\pgn=\count31
+\toksA=\toks18
+\toksB=\toks19
+\toksC=\toks20
+\toksD=\toks21
+\boxA=\box19
+\boxB=\box20
+\countA=\count32
+\nopdfimagehelp=\toks22
+ fonts,
+\textleading=\dimen24
+\sffam=\fam8
+ markup,
+\fontdepth=\count33
+ glyphs,
+\errorbox=\box21
+
+page headings,
+\titlepagetopglue=\skip20
+\titlepagebottomglue=\skip21
+\evenheadline=\toks23
+\oddheadline=\toks24
+\evenfootline=\toks25
+\oddfootline=\toks26
+ tables,
+\tableindent=\dimen25
+\itemindent=\dimen26
+\itemmargin=\dimen27
+\itemmax=\dimen28
+\itemno=\count34
+\multitableparskip=\skip22
+\multitableparindent=\skip23
+\multitablecolspace=\dimen29
+\multitablelinespace=\skip24
+\colcount=\count35
+\everytab=\toks27
+ conditionals,
+\doignorecount=\count36
+ indexing,
+\dummybox=\box22
+\whatsitskip=\skip25
+\whatsitpenalty=\count37
+\entryrightmargin=\dimen30
+\thinshrinkable=\skip26
+\partialpage=\box23
+\doublecolumnhsize=\dimen31
+\balancedcolumns=\box24
+ sectioning,
+\unnumberedno=\count38
+\chapno=\count39
+\secno=\count40
+\subsecno=\count41
+\subsubsecno=\count42
+\appendixno=\count43
+\absseclevel=\count44
+\secbase=\count45
+\chapheadingskip=\skip27
+\secheadingskip=\skip28
+\subsecheadingskip=\skip29
+ toc,
+\tocfile=\write0
+\contentsrightmargin=\skip30
+\savepageno=\count46
+\lastnegativepageno=\count47
+\tocindent=\dimen32
+ environments,
+\lispnarrowing=\skip31
+\envskipamount=\skip32
+\lskip=\skip33
+\rskip=\skip34
+\circthick=\dimen33
+\cartouter=\dimen34
+\cartinner=\dimen35
+\normbskip=\skip35
+\normpskip=\skip36
+\normlskip=\skip37
+\nonfillparindent=\dimen36
+\tabw=\dimen37
+\verbbox=\box25
+
+defuns,
+\defbodyindent=\skip38
+\defargsindent=\skip39
+\deflastargmargin=\skip40
+\defunpenalty=\count48
+\parencount=\count49
+\brackcount=\count50
+ macros,
+\paramno=\count51
+\macname=\toks28
+ cross references,
+\auxfile=\write1
+\savesfregister=\count52
+\toprefbox=\box26
+\printedrefnamebox=\box27
+\infofilenamebox=\box28
+\printedmanualbox=\box29
+ insertions,
+\footnoteno=\count53
+\SAVEfootins=\box30
+\SAVEmargin=\box31
+
+(/usr/share/texmf-dist/tex/generic/epsf/epsf.tex
+This is `epsf.tex' v2.7.4 <14 February 2011>
+\epsffilein=\read1
+\epsfframemargin=\dimen38
+\epsfframethickness=\dimen39
+\epsfrsize=\dimen40
+\epsftmp=\dimen41
+\epsftsize=\dimen42
+\epsfxsize=\dimen43
+\epsfysize=\dimen44
+\pspoints=\dimen45
+)
+\noepsfhelp=\toks29
+ localization,
+\nolanghelp=\toks30
+\countUTFx=\count54
+\countUTFy=\count55
+\countUTFz=\count56
+ formatting,
+\defaultparindent=\dimen46
+ and turning on texinfo input format.)
+texinfo.tex: doing @include of version.texi
+
+
+(/home/Bigolin/Syncus/Programação/C/racon/doc/version.texi) [1{/var/lib/texmf
+/fonts/map/pdftex/updmap/pdftex.map}]
+(/home/Bigolin/Syncus/Programação/C/racon/doc/racon.aux)
+\openout1 = `racon.aux'.
+
+ [2]
+(/home/Bigolin/Syncus/Programação/C/racon/doc/racon.toc) [-1]
+(/home/Bigolin/Syncus/Programação/C/racon/doc/racon.toc)
+(/home/Bigolin/Syncus/Programação/C/racon/doc/racon.toc)
+(racon Copying Conditions)
+\openout0 = `racon.toc'.
+
+@cpindfile=@write2
+\openout2 = `racon.cp'.
+
+
+Writing index file racon.cp
+Chapter 1 [1] Appendix A [2]
+texinfo.tex: doing @include of fdl.texi
+
+
+(/home/Bigolin/Syncus/Programação/C/racon/doc/fdl.texi [3] [4] [5] [6]
+[7] [8] [9]) (Index) [10]
+(/home/Bigolin/Syncus/Programação/C/racon/doc/racon.cps) [11] ) 
+Here is how much of TeX's memory you used:
+ 3217 strings out of 494638
+ 33616 string characters out of 6154594
+ 76287 words of memory out of 5000000
+ 4719 multiletter control sequences out of 15000+600000
+ 34203 words of font info for 119 fonts, out of 8000000 for 9000
+ 1453 hyphenation exceptions out of 8191
+ 16i,6n,16p,309b,597s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmmi9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
+10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/sha
+re/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmtt10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pf
+b></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on racon.pdf (14 pages, 150165 bytes).
+PDF statistics:
+ 147 PDF objects out of 1000 (max. 8388607)
+ 115 compressed objects within 2 object streams
+ 16 named destinations out of 1000 (max. 500000)
+ 45 words of extra memory for PDF output out of 10000 (max. 10000000)
+
