@@ -1,4 +1,4 @@
-/* strUtils.c -- several string manipulations functions used by the program.
+/* str_utils.c -- several string manipulations functions used by the program.
  * Copyright (C) 2020 Matheus Fernandes Bigolin
  */
 
