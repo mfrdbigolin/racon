@@ -4,6 +4,11 @@
 
 *.pdf
 *.html
+*.aux
+*.cp
+*.cps
+*.log
+*.toc
 
 !.gitattributes
 !.gitignore
