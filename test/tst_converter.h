@@ -47,4 +47,3 @@ extern const struct Form tst_cases_f[];
 extern const struct Form_Fail fail_cases[];
 
 #endif /* TST_CONVERTER_H  */
-

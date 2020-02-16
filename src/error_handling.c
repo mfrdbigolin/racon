@@ -167,7 +167,7 @@ check_pos(const char *pos, const char *radix)
                    "|radix| (%.6R*g)10\n", pos[0], pos - DIGITS,
                    (!mpfr_cmp_ui(radix_num, pos - DIGITS)
                     ? "equal" : "greater than"), ROUND, radix_num);
-      
+
       mpfr_clears(radix_num, radix_num_inv, NULL);
       mpfr_free_cache();
       return EXIT_FAILURE;
@@ -185,7 +185,7 @@ check_pos(const char *pos, const char *radix)
       mpfr_free_cache();
       return EXIT_FAILURE;
     }
-  
+
   mpfr_clears(radix_num, radix_num_inv, NULL);
   mpfr_free_cache();
   return EXIT_SUCCESS;
@@ -235,4 +235,3 @@ check_blk(const char *blk, const char *radix)
   mpfr_free_cache();
   return EXIT_FAILURE;
 }
-

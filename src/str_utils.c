@@ -99,7 +99,7 @@ strip(const char *str)
     }
   n_str[j] = '\0';
 
-  return n_str;  
+  return n_str;
 }
 
 /* Tokenize a number by its integer and fractional part and store it in a
@@ -171,7 +171,7 @@ sstrdup(const char *str, const size_t num, const unsigned int line)
       exit(EXIT_FAILURE);
     }
 
-  char *n_str = NULL;  
+  char *n_str = NULL;
   n_str = calloc(strlen(str) + 1, sizeof (char));
 
   if (!n_str)
@@ -273,4 +273,3 @@ form_f(const mpfr_ptr frac)
   free(exp);
   return form_num;
 }
-
