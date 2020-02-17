@@ -1,6 +1,6 @@
-.*
+*~
+
 *.[osa]
-*.bak
 
 *.pdf
 *.html
@@ -10,10 +10,6 @@
 *.log
 *.toc
 
-!.gitattributes
-!.gitignore
-
-TODO/
 bin/
-doc/Drafts/
-lib/
+build/
+doc/output/
