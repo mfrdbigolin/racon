@@ -1,4 +1,4 @@
-/* str_utils.h -- header for str_utils.c
+/* test_driver.h -- header for test_driver.c
  * Copyright (C) 2020 Matheus Fernandes Bigolin
  * Contact e-mail: <mfrdrbigolin@disroot.org>
  */
@@ -16,26 +16,17 @@
  * <https://www.gnu.org/licenses/gpl.html>.
  */
 
-#ifndef STR_UTILS_H
-# define STR_UTILS_H
+#ifndef TEST_DRIVER_H
+# define TEST_DRIVER_H
 
-# include "debug.h"
 # include "types.h"
 
-struct Number
-{
-  char* int_part;
-  char* frac_part;
-};
+/* Call function <f> with each element of array <a> once.  */
+# define ITERATED_CALL(f, a)                            \
+  for (size_t i = 0; i < (sizeof a / sizeof a[0]); ++i) \
+    f(&a[i]);
 
-extern char* expand(CPC_Debug dbg, CPC_char blk,
-                    char opening, char closing);
-/* Strip the string (<str>) from all space characters (locale defined).
- *   Return the pointer to the stripped string.
- */
-extern char* strip(CPC_Debug dbg, CPC_char str);
-extern struct Number* tok_num(CPC_Debug dbg, CPC_char str, CPC_char delim);
-/* Free a allocated struct Number variable (<num>) and its components.  */
-extern void free_num(CPC_Debug dbg, struct Number* num);
+extern void success(CPC_char format, ...);
+extern void fail(CPC_char format, ...);
 
-#endif /* !STR_UTILS_H  */
+#endif /* !TEST_DRIVER_H  */

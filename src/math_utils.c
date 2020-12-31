@@ -18,11 +18,19 @@
 
 #include "math_utils.h"
 
+#include "converter.h"
+#include "debug.h"
+#include "mem_utils.h"
+#include "types.h"
+
+#include <gmp.h>
+#include <mpfr.h>
+
 mpfr_ptr
-log_b(const mpfr_ptr num, const mpfr_ptr base)
+log_b(CPC_mpfr num, CPC_mpfr base)
 {
   mpfr_t log_num, log_base;
-  mpfr_ptr log_div = SALLOC(1, sizeof (mpfr_t));
+  mpfr_ptr log_div = _((salloc), 1, sizeof *log_div);
 
   mpfr_inits2(PREC, log_num, log_base, log_div, NULL);
 

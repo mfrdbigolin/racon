@@ -18,15 +18,21 @@
 
 #include "parser.h"
 
-const char *argp_program_version =
-  "racon 1.0\n"
+#include "debug.h"
+#include "types.h"
+
+#include <argp.h>
+
+CP_char argp_program_version =
+  "Racon 1.0\n"
   "Copyright (C) 2020 Matheus Fernandes Bigolin\n"
   "License GPLv3+: GNU GPL version 3 or later "
   "<https://gnu.org/licenses/gpl.html>\n"
   "This is free software: you are free to change and redistribute it.\n"
   "There is NO WARRANTY, to the extent permitted by law.";
+CP_char argp_program_bug_address = "<mfrdrbigolin@disroot.org>";
+
 static const char doc[] = "\nNumeric radix conversion system.\n";
-const char *argp_program_bug_address = "<mfrdrbigolin@disroot.org>";
 static const char args_doc[] = "value";
 static struct argp_option options[] =
   {
@@ -37,11 +43,14 @@ static struct argp_option options[] =
    //{0}
   };
 
-static error_t parse_opt(int key, char *arg, struct argp_state *state);
+#ifndef DEBUG
+static error_t parse_opt(int key, char* arg, struct argp_state* state);
+#endif /* !DEBUG  */
 
-static error_t parse_opt(int key, char *arg, struct argp_state *state)
+SCOPE error_t
+parse_opt(int key, char* arg, struct argp_state* state)
 {
-  struct arguments *args = state->input;
+  struct Args* args = state->input;
 
   switch (key)
     {

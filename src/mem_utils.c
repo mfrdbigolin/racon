@@ -1,4 +1,4 @@
-/* str_utils.h -- header for str_utils.c
+/* mem_utils.c -- memory allocation functions
  * Copyright (C) 2020 Matheus Fernandes Bigolin
  * Contact e-mail: <mfrdrbigolin@disroot.org>
  */
@@ -16,26 +16,25 @@
  * <https://www.gnu.org/licenses/gpl.html>.
  */
 
-#ifndef STR_UTILS_H
-# define STR_UTILS_H
+#include "mem_utils.h"
 
-# include "debug.h"
-# include "types.h"
+#include "debug.h"
+#include "types.h"
 
-struct Number
+#include <stdlib.h>
+#include <string.h>
+
+char*
+sstrdup(CPC_Debug dbg, CPC_char str, size_t num)
 {
-  char* int_part;
-  char* frac_part;
-};
+  if (!str || !strcmp(str, ""))
+    die(dbg, EXIT_FAILURE, "NULL or empty string\n");
+  if (num > strlen(str))
+    die(dbg, EXIT_FAILURE, "attempt to copy %zu byte(s) from %zu byte(s) "
+        "string\n", num, strlen(str));
 
-extern char* expand(CPC_Debug dbg, CPC_char blk,
-                    char opening, char closing);
-/* Strip the string (<str>) from all space characters (locale defined).
- *   Return the pointer to the stripped string.
- */
-extern char* strip(CPC_Debug dbg, CPC_char str);
-extern struct Number* tok_num(CPC_Debug dbg, CPC_char str, CPC_char delim);
-/* Free a allocated struct Number variable (<num>) and its components.  */
-extern void free_num(CPC_Debug dbg, struct Number* num);
+  char* n_str = _((salloc), num + 1, sizeof *n_str);
+  memcpy(n_str, str, num);
 
-#endif /* !STR_UTILS_H  */
+  return n_str;
+}

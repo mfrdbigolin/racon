@@ -1,4 +1,4 @@
-/* tst_converter.h -- header for tst_converter.c
+/* debug.c -- exiting and debug information
  * Copyright (C) 2020 Matheus Fernandes Bigolin
  * Contact e-mail: <mfrdrbigolin@disroot.org>
  */
@@ -16,32 +16,36 @@
  * <https://www.gnu.org/licenses/gpl.html>.
  */
 
-#ifndef TST_CONVERTER_H
-# define TST_CONVERTER_H
+#include "debug.h"
 
-# include <stdio.h>
-# include <string.h>
-# include <stdlib.h>
-# include <gmp.h>
-# include <mpfr.h>
+#include "types.h"
 
-struct Form
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void
+die(CPC_Debug dbg, int8_t signal, CPC_char format, ...)
 {
-  char radix[100];
-  char input[300];
-  char expected[300];
-};
+  if (dbg)
+    {
+      fprintf(stderr, DBG_DIR, DBG_INFO);
+      if (format)
+        fprintf(stderr, ": ");
+    }
+  if (format)
+    {
+      va_list args;
 
-struct Form_Fail
-{
-  char radix_o[100];
-  char radix_i[300];
-  char input[300];
-};
+      va_start(args, format);
 
-extern const struct Form tst_cases[];
-extern const struct Form etst_cases[];
-extern const struct Form tst_cases_f[];
-extern const struct Form_Fail fail_cases[];
+      vfprintf(stderr, format, args);
 
-#endif /* TST_CONVERTER_H  */
+      va_end(args);
+    }
+
+#ifndef DEBUG
+  exit(signal);
+#endif /* !DEBUG  */
+}

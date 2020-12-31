@@ -18,16 +18,23 @@
 
 #include "racon.h"
 
+#include "converter.h"
+#include "debug.h"
+#include "mem_utils.h"
+#include "parser.h"
+
+#include <argp.h>
+
 int
-main(const int arg_c, char **arg_k)
+main(const int argc, char** argk)
 {
-  struct arguments args = {0, "", ""};
+  struct Args args = {0, "", ""};
 
-  argp_parse(&argp, arg_c, arg_k, 0, 0, &args);
+  argp_parse(&argp, argc, argk, 0, 0, &args);
 
-  char *ot_num = conv(args.radix_o, args.num, args.radix_i);
-  printf("RESULTADO: %s\n", ot_num);
+  char* ot_num = conv(args.radix_o, args.num, args.radix_i);
+  printf("RESULT: %s\n", ot_num);
 
-  free(ot_num);
-  return 0;
+  _((sfree), ot_num);
+  return EXIT_SUCCESS;
 }

@@ -18,136 +18,156 @@
 
 #include "error_handling.h"
 
-static bool check_iter(const char *num_part, const char *radix);
-static bool check_tok(const char *num, const char *rad_point);
-static bool check_pos(const char *pos, const char *radix);
-static bool check_blk(const char *blk, const char *radix);
+#include "converter.h"
+#include "debug.h"
+#include "mem_utils.h"
+#include "str_utils.h"
+#include "types.h"
+
+#include <inttypes.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <gmp.h>
+#include <mpfr.h>
+
+#ifndef DEBUG
+static bool check_radix(CPC_Debug dbg, CPC_char radix);
+static bool check_number(CPC_Debug dbg, CPC_char num, CPC_char radix);
+static bool check_tok(CPC_char num, CPC_char rad_point);
+static bool check_iter(CPC_char num_part, CPC_char radix);
+static bool check_pos(CPC_char pos, CPC_char radix);
+static bool check_expand(CPC_Debug dbg, CPC_char blk,
+                         char opening, char closing);
+static bool check_blk(CPC_char blk, CPC_char radix);
+#endif /* !DEBUG  */
 
 bool
-check_radix(const char *radix)
+check_core(CPC_Debug dbg, CPC_char radix_o,
+           CPC_char num, CPC_char radix_i)
 {
-  if (radix == NULL)
-    {
-      fprintf(stderr, "racon: NULL input or output radix\n");
-      return EXIT_FAILURE;
-    }
+  if (!radix_o)
+    die(dbg, EXIT_FAILURE, "NULL output radix\n");
+  if (!radix_i)
+    die(dbg, EXIT_FAILURE, "NULL input radix\n");
+  if (!num)
+    die(dbg, EXIT_FAILURE, "NULL number string\n");
 
+  if ((!check_radix(dbg, radix_o))
+      || (!check_radix(dbg, radix_i))
+      || (!check_number(dbg, num, radix_i)))
+    return false;
+
+  return true;
+}
+
+SCOPE bool
+check_radix(CPC_Debug dbg, CPC_char radix)
+{
   mpfr_t radix_num;
-  char *end_ptr = NULL;
+  char* end_ptr = NULL;
 
   mpfr_init2(radix_num, PREC);
 
   mpfr_strtofr(radix_num, radix, &end_ptr, 10, ROUND);
 
-  if ((end_ptr[0] == '\0') && (strspn(radix, "-.0123456789")
-                               == strlen(radix)))
+  if (!end_ptr[0] && (strspn(radix, "-.0123456789") == strlen(radix)))
     {
       if ((!mpfr_cmp_si(radix_num, -1)) || (!mpfr_sgn(radix_num))
           || (!mpfr_cmp_si(radix_num, 1)))
         {
-          fprintf(stderr, "racon: the radix cannot be "
+          fprintf(stderr, "Racon: the radix cannot be "
                   "equal '%s'\n", radix);
-        }
-      else
-        {
           mpfr_clear(radix_num);
-          mpfr_free_cache();
-          return EXIT_SUCCESS;
+          return false;
         }
     }
   else
     {
-      fprintf(stderr, "racon: the radix '%s' cannot be evaluated\n", radix);
+      fprintf(stderr, "Racon: the radix '%s' cannot be evaluated\n", radix);
+      mpfr_clear(radix_num);
+      return false;
     }
 
   mpfr_clear(radix_num);
-  mpfr_free_cache();
-  return EXIT_FAILURE;
+  return true;
 }
 
-bool
-check_number(const char *num, const char *radix)
+SCOPE bool
+check_number(CPC_Debug dbg, CPC_char num, CPC_char radix)
 {
-  if (num == NULL)
+  char* num_strip = _((strip), num);
+
+  if (!check_tok(num_strip, "."))
+    return false;
+
+  struct Number* number = _((tok_num), num_strip, ".");
+  _((sfree), num_strip);
+  if (!check_iter(number->int_part, radix)
+      || !check_iter(number->frac_part, radix))
     {
-      fprintf(stderr, "racon: NULL number string\n");
-      return EXIT_FAILURE;
+      _((free_num), number);
+      return false;
     }
 
-  if (check_tok(num, ".") == EXIT_FAILURE)
-    return EXIT_FAILURE;
-
-  char *num_strip = strip(num);
-  struct Number *number = tok_num(num_strip, ".");
-
-  free(num_strip);
-  if ((check_iter(number->int_part, radix) == EXIT_FAILURE)
-      || ((number->frac_part != NULL)
-          && (check_iter(number->frac_part, radix) == EXIT_FAILURE)))
-    {
-      free_num(number);
-      return EXIT_FAILURE;
-      }
-
-  free_num(number);
-  return EXIT_SUCCESS;
+  _((free_num), number);
+  return true;
 }
 
-static bool
-check_iter(const char *num_part, const char *radix)
+SCOPE bool
+check_tok(CPC_char num, CPC_char rad_point)
 {
-  for (size_t i = num_part[0] == '-'; i < strlen(num_part); ++i)
+  //printf("%d %d\n", strcmp(num, rad_point), strcmp(num, ""));
+  /*if (strcmp(num, rad_point) || strcmp(num, ""))
     {
-      char *pos = strchr(DIGITS, num_part[i]);
-      char *blk = expand(num_part + i, "[]");
-
-      if (pos != NULL)
-        {
-          if (check_pos(pos, radix) == EXIT_FAILURE)
-            return EXIT_FAILURE;
-        }
-      else if (blk != NULL)
-        {
-          if (check_blk(blk, radix) == EXIT_FAILURE)
-            {
-              free(blk);
-              return EXIT_FAILURE;
-            }
-
-          i += strcspn(num_part + i, "]");
-
-          free(blk);
-        }
-      else
-        {
-          fprintf(stderr, "racon: unknown symbol '%c'\n", num_part[i]);
-          return EXIT_FAILURE;
-        }
-    }
-  return EXIT_SUCCESS;
-}
-
-/* Checks if the number is well-formed, id est has only one or none
- * radix point.
- *   Receives as input the number string (<num>) and the
- * radix point (<rad_point>).
- *   Returns the flag for success or failure.
- */
-static bool
-check_tok(const char *num, const char *rad_point)
-{
-  if (strstr(num, rad_point) != NULL)
-    if (strstr(strstr(num, rad_point) + 1, rad_point) != NULL)
+      fprintf(stderr, "Racon: empty number\n");
+      return false;
+      }*/
+  if (strstr(num, rad_point))
+    if (strstr(strstr(num, rad_point) + 1, rad_point))
       {
-        fprintf(stderr, "racon: please enter a well-formed number\n");
-        return EXIT_FAILURE;
+        fprintf(stderr, "Racon: please enter a well-formed number\n");
+        return false;
       }
-
-  return EXIT_SUCCESS;
+  return true;
 }
 
-static bool
-check_pos(const char *pos, const char *radix)
+SCOPE bool
+check_iter(CPC_char num_part, CPC_char radix)
+{
+  for (size_t i = ('-' == num_part[0]); i < strlen(num_part); ++i)
+    if (strchr(DIGITS, num_part[i]))
+      {
+        if (!check_pos(strchr(DIGITS, num_part[i]), radix))
+          return false;
+      }
+    else if (_((check_expand), num_part + i, '<', '>'))
+      {
+        char* blk = _((expand), num_part + i, '<', '>');
+
+        if (!check_blk(blk, radix))
+          {
+            _((sfree), blk);
+            return false;
+          }
+
+        i += strcspn(num_part + i, ">");
+
+        _((sfree), blk);
+      }
+    else
+      {
+        fprintf(stderr, "Racon: unknown symbol '%c'\n", num_part[i]);
+        return false;
+      }
+
+  return true;
+}
+
+SCOPE bool
+check_pos(CPC_char pos, CPC_char radix)
 {
   mpfr_t radix_num, radix_num_inv;
 
@@ -161,75 +181,90 @@ check_pos(const char *pos, const char *radix)
       && ((mpfr_cmp_si(radix_num, -1) < 0)
           || (mpfr_cmp_si(radix_num, 1) > 0)))
     {
-      mpfr_fprintf(stderr, "racon: the digit [%c] (%zu)10 is %s the "
-                   "|radix| (%.6R*g)10\n", pos[0], pos - DIGITS,
+      mpfr_fprintf(stderr, "Racon: the digit [%c] (<%zu>) is %s the "
+                   "|radix| (%.6R*g)\n", pos[0], pos - DIGITS,
                    (!mpfr_cmp_ui(radix_num, pos - DIGITS)
                     ? "equal" : "greater than"), ROUND, radix_num);
-
       mpfr_clears(radix_num, radix_num_inv, NULL);
       mpfr_free_cache();
-      return EXIT_FAILURE;
+      return false;
     }
   else if ((mpfr_cmp_ui(radix_num_inv, pos - DIGITS + 1) < 0)
            && ((mpfr_cmp_si(radix_num_inv, -1) < 0)
                || (mpfr_cmp_si(radix_num_inv, 1) > 0)))
     {
-      mpfr_fprintf(stderr, "racon: the digit [%c] (%zu)10 is %s the "
-                   "|radix|^-1 (%.6R*g)10\n", pos[0], pos - DIGITS,
+      mpfr_fprintf(stderr, "Racon: the digit [%c] (<%zu>) is %s the "
+                   "|radix|^-1 (%.6R*g)\n", pos[0], pos - DIGITS,
                    mpfr_cmp_ui(radix_num_inv, pos - DIGITS) > 0
                    ? "equal" : "greater than", ROUND, radix_num_inv);
-
       mpfr_clears(radix_num, radix_num_inv, NULL);
       mpfr_free_cache();
-      return EXIT_FAILURE;
+      return false;
     }
 
   mpfr_clears(radix_num, radix_num_inv, NULL);
   mpfr_free_cache();
-  return EXIT_SUCCESS;
+  return true;
 }
 
-static bool
-check_blk(const char *blk, const char *radix)
+SCOPE bool
+check_expand(CPC_Debug dbg, CPC_char blk, char opening, char closing)
 {
-  mpfr_t radix_num;
-  mpz_t blk_val;
-  char *endptr = NULL;
+  if (!blk)
+    die(dbg, EXIT_FAILURE, "the block is NULL\n");
 
-  mpfr_init2(radix_num, PREC);
+  /* Check if <blk> starts and closes with
+   * <opening> and <closing>, respectively.
+   */
+  if ((blk[0] != opening) || !memchr(blk, closing, strlen(blk)))
+    return false;
 
-  mpfr_set_str(radix_num, radix, 10, ROUND);
+  /* Check if there is another <opening> before <closing>.  */
+  if (memchr(blk + 1, opening, strlen(blk) - 1)
+      && (memchr(blk + 1, opening, strlen(blk) - 1)
+          < memchr(blk + 1, opening, strlen(blk) - 1)))
+    return false;
+
+  return true;
+}
+
+SCOPE bool
+check_blk(CPC_char blk, CPC_char radix)
+{
+  mpfr_t radix_num, blk_val;
+  char* end_ptr = NULL;
+
+  mpfr_inits2(PREC, radix_num, blk_val, NULL);
+
+  mpfr_strtofr(radix_num, radix, &end_ptr, 10, ROUND);
   mpfr_abs(radix_num, radix_num, ROUND);
-  mpz_init_set_str(blk_val, blk, 10);
-  strtol(blk, &endptr, 10);
+  mpfr_set_str(blk_val, blk, 10, ROUND);
 
-  if ((endptr[0] == '\0') && (strspn(blk, "-+.0123456789") == strlen(blk)))
+  if (!end_ptr[0] && (strspn(blk, "-+.0123456789") == strlen(blk)))
     {
-      if (mpfr_cmp_z(radix_num, blk_val) <= 0)
+      if (mpfr_cmp(radix_num, blk_val) <= 0)
         {
-          fprintf(stderr, "racon: the digit [%s] is %s the radix (%s)\n",
-                  blk, !mpfr_cmp_z(radix_num, blk_val)
+          fprintf(stderr, "Racon: the digit [%s] (<%" PRIuMAX  ">) is %s "
+                  "the radix (%s)\n", blk, mpfr_get_uj(blk_val, ROUND),
+                  !mpfr_cmp(radix_num, blk_val)
                   ? "equal" : "greater than", radix);
         }
-      else if (mpz_sgn(blk_val) < 0)
+      else if (mpfr_sgn(blk_val) < 0)
         {
-          fprintf(stderr, "racon: the digit [%s] is negative\n", blk);
+          fprintf(stderr, "Racon: the digit [%s] cannot be "
+                  "negative\n", blk);
         }
       else
         {
-          mpfr_clear(radix_num);
-          mpz_clear(blk_val);
-          mpfr_free_cache();
-          return EXIT_SUCCESS;
+          mpfr_clears(radix_num, blk_val, NULL);
+          return true;
         }
     }
   else
     {
-      fprintf(stderr, "racon: the digit [%s] cannot be evaluated\n", blk);
+      fprintf(stderr, "Racon: the digit [%s] cannot be evaluated\n", blk);
     }
 
-  mpfr_clear(radix_num);
-  mpz_clear(blk_val);
-  mpfr_free_cache();
-  return EXIT_FAILURE;
+  mpfr_clears(radix_num, blk_val, NULL);
+  return false;
 }

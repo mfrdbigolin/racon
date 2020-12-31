@@ -18,99 +18,113 @@
 
 #include "tst_converter.h"
 #include "cases_converter.h"
-#include "str_utils.h"
 
-extern char *conv(const char *radix_o, const char *num,
-                  const char *radix_i);
-extern mpfr_ptr ut_dec(const char *input_num, const mpfr_ptr radix_i);
-extern mpfr_ptr ut_dec_f(const char *frac_num, const mpfr_ptr radix_i);
-extern char *ex_dec(const mpfr_ptr dec_num, const mpfr_ptr radix_o);
+#include "converter.h"
+#include "mem_utils.h"
 
-static void tst_form_u(mpfr_ptr (*fun)(const char *, const mpfr_ptr),
-                       const struct Form *form);
-static void tst_form_e(char *(*fun)(const mpfr_ptr, const mpfr_ptr),
-                       const struct Form *form);
-static void tst_fail(char *(*fun)(const char *, const char *,
-                                  const char *),
-                     const struct Form_Fail *form);
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <gmp.h>
+#include <mpfr.h>
+
+static void tst_form_u(mpfr_ptr (* fun)(CPC_char, CPC_mpfr),
+                       const struct Form form);
+static void tst_form_e(char* (* fun)(CPC_mpfr, CPC_mpfr),
+                       const struct Form form);
+static void tst_fail(char* (* fun)(CPC_char, CPC_char, CPC_char),
+                     const struct Form_Fail form);
 
 int
-main(int arg_c, char **arg_v)
+main(const int arg_c, char** arg_v)
 {
-  if (arg_v[1][0] == '1')
-    for (size_t i = 0; i < (sizeof tst_cases / sizeof (struct Form)); ++i)
-      tst_form_u(ut_dec, &(tst_cases[i]));
-  else if (arg_v[1][0] == '2')
-    for (size_t i = 0; i < (sizeof tst_cases_f
-                            / sizeof (struct Form)); ++i)
-      tst_form_u(ut_dec, &(tst_cases_f[i]));
-  else if (arg_v[1][0] == '3')
-    for (size_t i = 0; i < (sizeof fail_cases /
-                            sizeof (struct Form_Fail)); ++i)
-      tst_fail(conv, &(fail_cases[i]));
-  else if (arg_v[1][0] == '4')
-    for (size_t i = 0; i < (sizeof etst_cases /
-                            sizeof (struct Form)); ++i)
-      tst_form_e(ex_dec, &(etst_cases[i]));
+  if (arg_c <= 1)
+    {
+      fprintf(stderr, "Please input a number (1-4)\n");
+      return EXIT_FAILURE;
+    }
 
-  return 0;
+  switch (arg_v[1][0])
+    {
+    case '1':
+      for (size_t i = 0; i < (sizeof tst_cases
+                              / sizeof tst_cases[0]); ++i)
+        tst_form_u(ut_dec, tst_cases[i]);
+      break;
+    case '2':
+      for (size_t i = 0; i < (sizeof tst_cases_f
+                              / sizeof tst_cases_f[0]); ++i)
+        tst_form_u(ut_dec, tst_cases_f[i]);
+      break;
+    case '3':
+      for (size_t i = 0; i < (sizeof fail_cases
+                              / sizeof fail_cases[0]); ++i)
+        tst_fail(conv, fail_cases[i]);
+      break;
+    case '4':
+      for (size_t i = 0; i < (sizeof etst_cases
+                              / sizeof etst_cases[0]); ++i)
+        tst_form_e(ex_dec, etst_cases[i]);
+    }
+
+  return EXIT_SUCCESS;
 }
 
 static void
-tst_form_u(mpfr_ptr (*fun)(const char *, const mpfr_ptr),
-           const struct Form *form)
+tst_form_u(mpfr_ptr (* fun)(CPC_char, CPC_mpfr),
+           const struct Form form)
 {
-  mpfr_ptr bas = calloc(1, sizeof (mpfr_t));
-  mpfr_init(bas);
-  mpfr_set_str(bas, form->radix, 10, 128);
-  mpfr_ptr output = fun(form->input, bas);
-  char *str = format(output);
+  mpfr_t bas, expc;
+  mpfr_inits2(PREC, bas, expc, NULL);
+  mpfr_set_str(bas, form.radix, 10, ROUND);
+  mpfr_set_str(expc, form.expected, 10, ROUND);
+  mpfr_ptr output = fun(form.input, bas);
 
-  if (!strcmp(str, form->expected))
-    printf("SUCC: %s(%s) -> %s\n", form->radix, form->input, str);
+  if (!mpfr_cmp(output, expc))
+    printf("SUCC: %s(%s) -> %s\n", form.radix, form.input, form.expected);
   else
-    printf("FAIL: %s(%s) -> %s, %s\n",
-    form->radix, form->input, str, form->expected);
+    mpfr_printf("FAIL: %s(%s) -> %.32R*f, %s\n",
+                form.radix, form.input, ROUND, output, form.expected);
 
-  mpfr_clears(bas, output, NULL);
-  free(bas);
-  free(output);
-  free(str);
+  mpfr_clears(bas, expc, output, NULL);
+  mpfr_free_cache();
+  _((sfree), output);
 }
 
 static void
-tst_form_e(char *(*fun)(const mpfr_ptr, const mpfr_ptr),
-           const struct Form *form)
+tst_form_e(char* (* fun)(CPC_mpfr, CPC_mpfr),
+           const struct Form form)
 {
-  mpfr_ptr input = calloc(1, sizeof (mpfr_t));
-  mpfr_ptr bas = calloc(1, sizeof (mpfr_t));
+  mpfr_ptr input = _((salloc), 1, sizeof *input);
+  mpfr_ptr bas = _((salloc), 1, sizeof *bas);
 
   mpfr_inits(input, bas, NULL);
 
-  mpfr_set_str(input, form->input, 10, 128);
-  mpfr_set_str(bas, form->radix, 10, 128);
-  char *output = fun(input, bas);
+  mpfr_set_str(input, form.input, 10, 128);
+  mpfr_set_str(bas, form.radix, 10, 128);
+  char* output = fun(input, bas);
 
-  if (!strcmp(output, form->expected))
-    printf("SUCC: %s(%s) -> %s\n", form->radix, form->input, output);
+  if (!strcmp(output, form.expected))
+    printf("SUCC: %s(%s) -> %s\n", form.radix, form.input, output);
   else
     printf("FAIL: %s(%s) -> %s, %s\n",
-           form->radix, form->input, output, form->expected);
+           form.radix, form.input, output, form.expected);
 
   mpfr_clears(input, bas, NULL);
-  free(input);
-  free(bas);
-  free(output);
+  _((sfree), input);
+  _((sfree), bas);
+  _((sfree), output);
 }
 
 static void
-tst_fail(char *(*fun)(const char *, const char *, const char *),
-         const struct Form_Fail *form)
+tst_fail(char* (* fun)(CPC_char, CPC_char, CPC_char),
+         const struct Form_Fail form)
 {
-  char *output = fun(form->radix_o, form->input, form->radix_i);
+  char* output = fun(form.radix_o, form.input, form.radix_i);
 
   if (output)
-    printf("FAIL: %s(%s) -> %s\n", form->radix_i, form->input, output);
-  else
-    free(output);
+    {
+      printf("FAIL: %s(%s) -> %s\n", form.radix_i, form.input, output);
+      _((sfree), output);
+    }
 }

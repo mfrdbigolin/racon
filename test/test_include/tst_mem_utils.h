@@ -1,4 +1,4 @@
-/* str_utils.h -- header for str_utils.c
+/* tst_mem_utils.h -- header for tst_mem_utils.c
  * Copyright (C) 2020 Matheus Fernandes Bigolin
  * Contact e-mail: <mfrdrbigolin@disroot.org>
  */
@@ -16,26 +16,30 @@
  * <https://www.gnu.org/licenses/gpl.html>.
  */
 
-#ifndef STR_UTILS_H
-# define STR_UTILS_H
+#ifndef TST_MEM_UTILS_H
+# define TST_MEM_UTILS_H
 
-# include "debug.h"
 # include "types.h"
 
-struct Number
+# include <stdbool.h>
+# include <stdint.h>
+
+struct Check_mult_overflow
 {
-  char* int_part;
-  char* frac_part;
+  size_t num_1;
+  size_t num_2;
+  bool expected;
 };
 
-extern char* expand(CPC_Debug dbg, CPC_char blk,
-                    char opening, char closing);
-/* Strip the string (<str>) from all space characters (locale defined).
- *   Return the pointer to the stripped string.
- */
-extern char* strip(CPC_Debug dbg, CPC_char str);
-extern struct Number* tok_num(CPC_Debug dbg, CPC_char str, CPC_char delim);
-/* Free a allocated struct Number variable (<num>) and its components.  */
-extern void free_num(CPC_Debug dbg, struct Number* num);
+struct Sstrdup
+{
+  CP_char str;
+  size_t num;
+  CP_char expected;
+};
 
-#endif /* !STR_UTILS_H  */
+extern void
+tst_check_mult_overflow(const struct Check_mult_overflow* const tst_case);
+extern void tst_sstrdup(const struct Sstrdup* const tst_case);
+
+#endif /* !TST_MEM_UTILS_H  */

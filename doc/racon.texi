@@ -4,12 +4,12 @@
 @setfilename racon.info
 
 @include version.texi
-@settitle racon @value{VERSION}
+@settitle Racon @value{VERSION}
 @documentencoding UTF-8
 @c %**end of header
 
 @copying
-This manual documents the racon (version @value{VERSION}, @value{UPDATED}),
+This manual documents the Racon (version @value{VERSION}, @value{UPDATED}),
 a radix conversion system that can convert between standard and non-standard
 positional bases, with both fractional and integer parts.
 
@@ -24,15 +24,15 @@ Texts, @pxref{GNU Free Documentation License}.
 @end quotation
 @end copying
 
-@dircategory racon radix converter
+@dircategory Racon radix converter
 @direntry
-* racon: (racon). Radix converter.
+* Racon: (Racon). Radix converter.
 @end direntry
 
 @titlepage
-@title @code{racon}
+@title @code{Racon}
 @subtitle Numeric Radix Conversion System
-@subtitle for racon version @value{VERSION}, @value{UPDATED}
+@subtitle for Racon version @value{VERSION}, @value{UPDATED}
 @author Matheus F. Bigolin
 
 @page
@@ -44,7 +44,7 @@ Texts, @pxref{GNU Free Documentation License}.
 
 @ifnottex
 @node Top
-@top racon
+@top Racon
 
 @insertcopying
 @end ifnottex
@@ -53,7 +53,7 @@ Texts, @pxref{GNU Free Documentation License}.
 BRIEF NODE LISTING
 
 * Copying Conditions::              Short license disclaimer
-* Introduction::                    Overview of racon
+* Introduction::                    Overview of Racon
 
 Appendices
 * GNU Free Documentation License::  Copying and sharing this manual
@@ -69,12 +69,12 @@ Introduction
 @end menu
 
 @node Copying Conditions
-@unnumbered racon Copying Conditions
+@unnumbered Racon Copying Conditions
 
 @cindex Copying conditions
 @cindex License disclaimer
 
-racon is @dfn{free software} (@dfn{libre}); this means that the user has the
+Racon is @dfn{free software} (@dfn{libre}); this means that the user has the
 freedom to use, modify and redistribute this program.  To protect these
 freedoms the software is copyrighted under the terms of the GNU General Public
 License version 3, or any later version published by the Free Software

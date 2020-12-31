@@ -1,4 +1,4 @@
-/* str_utils.h -- header for str_utils.c
+/* types.h -- basic and library types redefinition
  * Copyright (C) 2020 Matheus Fernandes Bigolin
  * Contact e-mail: <mfrdrbigolin@disroot.org>
  */
@@ -16,26 +16,18 @@
  * <https://www.gnu.org/licenses/gpl.html>.
  */
 
-#ifndef STR_UTILS_H
-# define STR_UTILS_H
+#ifndef TYPES_H
+# define TYPES_H
 
-# include "debug.h"
-# include "types.h"
+/* This is necessary here because GMP is not self-contained.  */
+# include <stdio.h>
 
-struct Number
-{
-  char* int_part;
-  char* frac_part;
-};
+# include <gmp.h>
+# include <mpfr.h>
 
-extern char* expand(CPC_Debug dbg, CPC_char blk,
-                    char opening, char closing);
-/* Strip the string (<str>) from all space characters (locale defined).
- *   Return the pointer to the stripped string.
- */
-extern char* strip(CPC_Debug dbg, CPC_char str);
-extern struct Number* tok_num(CPC_Debug dbg, CPC_char str, CPC_char delim);
-/* Free a allocated struct Number variable (<num>) and its components.  */
-extern void free_num(CPC_Debug dbg, struct Number* num);
+typedef const char* const CPC_char;
+typedef const char* CP_char;
+typedef const __mpfr_struct* const CPC_mpfr;
+typedef const __mpfr_struct* CP_mpfr;
 
-#endif /* !STR_UTILS_H  */
+#endif /* !TYPES_H  */

@@ -1,4 +1,4 @@
-/* str_utils.h -- header for str_utils.c
+/* test_driver.c -- general test functions
  * Copyright (C) 2020 Matheus Fernandes Bigolin
  * Contact e-mail: <mfrdrbigolin@disroot.org>
  */
@@ -16,26 +16,39 @@
  * <https://www.gnu.org/licenses/gpl.html>.
  */
 
-#ifndef STR_UTILS_H
-# define STR_UTILS_H
+#include "test_driver.h"
 
-# include "debug.h"
-# include "types.h"
+#include "types.h"
 
-struct Number
+#include <stdio.h>
+#include <stdarg.h>
+
+void
+success(CPC_char format, ...)
 {
-  char* int_part;
-  char* frac_part;
-};
+#ifdef QUIET
+  return;
+#endif /* QUIET  */
 
-extern char* expand(CPC_Debug dbg, CPC_char blk,
-                    char opening, char closing);
-/* Strip the string (<str>) from all space characters (locale defined).
- *   Return the pointer to the stripped string.
- */
-extern char* strip(CPC_Debug dbg, CPC_char str);
-extern struct Number* tok_num(CPC_Debug dbg, CPC_char str, CPC_char delim);
-/* Free a allocated struct Number variable (<num>) and its components.  */
-extern void free_num(CPC_Debug dbg, struct Number* num);
+  va_list args;
 
-#endif /* !STR_UTILS_H  */
+  va_start(args, format);
+
+  printf("SUCC: ");
+  vprintf(format, args);
+
+  va_end(args);
+}
+
+void
+fail(CPC_char format, ...)
+{
+  va_list args;
+
+  va_start(args, format);
+
+  printf("FAIL: ");
+  vprintf(format, args);
+
+  va_end(args);
+}

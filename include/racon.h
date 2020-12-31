@@ -19,12 +19,7 @@
 #ifndef RACON_H
 # define RACON_H
 
-# include <argp.h>
-
-# include "parser.h"
-# include "converter.h"
-
-# define PROGRAM_NAME "racon"
+# define PROGRAM_NAME "Racon"
 # define AUTHORS                                \
   proper_name("Matheus Fernandes Bigolin")
 

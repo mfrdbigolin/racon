@@ -1,4 +1,4 @@
-/* str_utils.h -- header for str_utils.c
+/* cases_mem_utils.h -- test cases for mem_utils.c
  * Copyright (C) 2020 Matheus Fernandes Bigolin
  * Contact e-mail: <mfrdrbigolin@disroot.org>
  */
@@ -16,26 +16,27 @@
  * <https://www.gnu.org/licenses/gpl.html>.
  */
 
-#ifndef STR_UTILS_H
-# define STR_UTILS_H
+#ifndef CASES_MEM_UTILS_H
+# define CASES_MEM_UTILS_H
 
-# include "debug.h"
-# include "types.h"
+static const struct Check_mult_overflow CASES_CHECK_MULT_OVERFLOW[] =
+  {
+   {SIZE_MAX, SIZE_MAX, true},
+   {SIZE_MAX, 1, false},
+   {UINT32_MAX, UINT32_MAX, false},
+   {(size_t) UINT32_MAX + 1, UINT32_MAX, false},
+   {(size_t) UINT32_MAX + 1, (size_t) UINT32_MAX + 1, true},
+   {(size_t) UINT32_MAX * (size_t) UINT16_MAX, UINT16_MAX, false},
+   {((size_t) UINT32_MAX + 1) * ((size_t) UINT16_MAX + 1),
+    UINT16_MAX + 1, true},
+   {SIZE_MAX, 0, false},
+   {0, SIZE_MAX, false}
+  };
 
-struct Number
-{
-  char* int_part;
-  char* frac_part;
-};
+static const struct Sstrdup CASES_SSTRDUP[] =
+  {
+   {"TEST_CASE_1", 4, "TEST"},
+   {"TEST_CASE_2", 0, ""},
+  };
 
-extern char* expand(CPC_Debug dbg, CPC_char blk,
-                    char opening, char closing);
-/* Strip the string (<str>) from all space characters (locale defined).
- *   Return the pointer to the stripped string.
- */
-extern char* strip(CPC_Debug dbg, CPC_char str);
-extern struct Number* tok_num(CPC_Debug dbg, CPC_char str, CPC_char delim);
-/* Free a allocated struct Number variable (<num>) and its components.  */
-extern void free_num(CPC_Debug dbg, struct Number* num);
-
-#endif /* !STR_UTILS_H  */
+#endif /* !CASES_MEM_UTILS_H  */

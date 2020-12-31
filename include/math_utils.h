@@ -19,15 +19,11 @@
 #ifndef MATH_UTILS_H
 # define MATH_UTILS_H
 
+# include "types.h"
+
 # include <gmp.h>
 # include <mpfr.h>
-# include <stdint.h>
 
-# include "str_utils.h"
-
-extern const size_t PREC;
-extern const int8_t ROUND;
-
-mpfr_ptr log_b(const mpfr_ptr num, const mpfr_ptr base);
+extern mpfr_ptr log_b(CPC_mpfr num, CPC_mpfr base);
 
 #endif /* !MATH_UTILS_H  */
