@@ -1,0 +1,16 @@
+Racon - RAdix CONverter
+Copyright (C) 2020 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+
+SPDX-License-Identifier: GPL-3.0-or-later OR MIT
+
+This software is dual-licensed with the GNU General Public License version
+3 or (at your option) later version OR the MIT (Expat) License; this means
+that to use this software you can comply with either the GPLv3+ OR with the
+MIT.
+
+It is important to state that both licenses provide NO WARRANTY of any kind
+for this material, and the auteur is NOT LIABLE in any event arising from
+the use of this program.
+
+Please read the full licenses at /LICENSE.GPL-3.0-or-later, for GPLv3+; or
+at /LICENSE.MIT, for MIT.
